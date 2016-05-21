@@ -1,140 +1,96 @@
 package machine.implementations.ChipEight;
 
-import machine.implementations.ChipEight.cpu.ChipEightCPU;
-import machine.implementations.ChipEight.memory.EightBitMemoryBank;
-import machine.implementations.ChipEight.program.ChipEightProgram;
+import machine.base.BaseMachine;
 import machine.interfaces.*;
-import machine.interfaces.MachinePart.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.GlobalUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Brendan on 5/17/2016.
+ * Created by Brendan on 5/21/2016.
+ *
+ * Default implementation of a ChipEightMachine, overrides the
+ * methods that it needs to from both BaseMachine and the
+ * IMachine interface.
  */
-public class ChipEightMachine implements Machine {
+public class ChipEightMachine extends BaseMachine {
     private static final Logger logger = LoggerFactory.getLogger(ChipEightMachine.class);
-    private final ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
-    private String machineName;
-    private boolean isRunning;
-    private volatile long runningTime;
-
-    private Map<Identifier, MachinePart> parts;
-    private Program requestedProgram;
-
-    private volatile long timerTaskTime;
-
 
     public ChipEightMachine() {
-        this("CHIP 8");
+        this("Chip-8");
     }
 
     public ChipEightMachine(String name) {
         this(name, null);
     }
 
-    public ChipEightMachine(String name, Program program) {
-        machineName = name;
-        parts = new HashMap<>();
-        requestedProgram = program;
-    }
+    public ChipEightMachine(String name, IProgram program) {
+        setMachineName(name);
+        setIsRunning(false);
+        setRunningTime(0);
+        setProgram(program);
+        setProgramLoaded(false);
 
-    private boolean loadProgram(Program chipEightProgram, MachinePart mem) {
-        ChipEightProgram.class.cast(chipEightProgram).loadIntoMemory(0, mem);
-        logger.info("Loading new program into {} memory {}", chipEightProgram, mem);
-        logger.debug("Total RAM usage: {}B/{}B", ((ChipEightProgram) chipEightProgram).getSize(), ((EightBitMemoryBank) mem).getSize());
-        return true;
-    }
-
-    public boolean turnOn() {
-        logger.info("Turning on {}!", machineName);
-        isRunning = true;
-        timer.scheduleAtFixedRate(globalTimer(), 1, 1, TimeUnit.MILLISECONDS);
-
-        boolean successfulLoad = false;
-        if (GlobalUtils.TEST || requestedProgram == null) {
-            logger.info("Loading test program...");
-            successfulLoad = loadProgram(new ChipEightProgram("test.program"), parts.get(Identifier.RAM));
-        } else {
-            successfulLoad = loadProgram(requestedProgram, parts.get(Identifier.RAM));
-        }
-
-        return successfulLoad;
-    }
-
-    private Runnable globalTimer() {
-        return () -> {
-            runningTime++;
-
-            if (runningTime - timerTaskTime >= ChipEightCPU.TIMER_DELAY) {
-                logger.debug("Should be running a task...");
-                CPU cpu = (CPU) parts.get(Identifier.CPU);
-                cpu.signalTimer();
-                timerTaskTime = runningTime;
-            }
-        };
-    }
-
-    public boolean turnOff() {
-        logger.info("Turning off {}!", machineName);
-        isRunning = false;
-        timer.shutdown();
-        return true;
-    }
-
-    public boolean attach(MachinePart part) {
-        logger.info("Attaching new part... {}", part);
-        parts.put(part.getPartName(), part);
-        return true;
+        logger.debug("New Machine Created to:\n{}", this);
     }
 
     @Override
-    public boolean test() {
+    public boolean turnOn() {
+        logger.info("Machine is being turned on!");
         return false;
     }
 
+    @Override
+    public boolean turnOff() {
+        logger.info("Machine is being turned off!");
+        return false;
+    }
+
+    @Override
     public void run() {
-        CPU cpu = (CPU) parts.get(Identifier.CPU);
-        Memory mem = (Memory) parts.get(Identifier.RAM);
-        while (isRunning) {
-            boolean noError = runCycle(cpu, mem);
-            logger.debug("There is no error? {}", noError);
-
-            if (cpu.hasTimerSignal()) {
-                // Do something now that the timer has fired...
-                logger.debug("Timer has signaled!");
-                //cpu.updateTimers();
-
-                cpu.resetTimerSignal();
-            }
-
-            if (!noError) {
-                isRunning = false;
-                return;
-            }
-        }
+        logger.info("Machine has turned on... Beginning main loop...");
     }
 
-    public boolean runCycle(CPU<Byte> cpu, Memory<Byte, Short> mem) {
-        logger.info("Running a single CPU Cycle!");
-        // Fetch
-        // Decode
-        // Execute
-        CodedInstruction codedInstruction = cpu.fetch(mem);
-        if (codedInstruction == null) {
-            return false;
+    @Override
+    public boolean attach(IMachinePart machinePart) {
+        logger.debug("Attempting to attach: {}", machinePart);
+
+        if (machinePart instanceof ICpu) {
+            setCPU((ICpu) machinePart);
+            return true;
         }
-        CPUOpcode instruction = cpu.decode(codedInstruction);
-        return cpu.execute(instruction);
+
+        if (machinePart instanceof IRam) {
+            setRam((IRam) machinePart);
+            return true;
+        }
+
+        if (machinePart instanceof IDisk) {
+            setDisk((IDisk) machinePart);
+            return true;
+        }
+
+        if (machinePart instanceof IScreen) {
+            setScreen((IScreen) machinePart);
+            return true;
+        }
+
+        if (machinePart instanceof IKeyboard) {
+            setKeyboard((IKeyboard) machinePart);
+            return true;
+        }
+
+        return false;
     }
 
-    public String toString() {
-        return "[MACHINE - " + machineName + "]";
+    @Override
+    public boolean loadProgram(IProgram program) {
+        if (program == null) {
+            logger.info("Program was null! Loading default program...");
+            setProgramLoaded(getDefaultProgram().loadIntoMemory(0, getRAM()));
+            return isProgramLoaded();
+        }
+        logger.info("Loading program {}", program);
+        setProgramLoaded(program.loadIntoMemory(0, getRAM()));
+        return isProgramLoaded();
     }
 }

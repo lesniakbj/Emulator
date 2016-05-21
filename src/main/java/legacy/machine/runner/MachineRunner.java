@@ -1,38 +1,36 @@
-package machine.runner;
+package legacy.machine.runner;
 
-import machine.builder.MachineBuilder;
-import machine.interfaces.IMachine;
+import legacy.machine.builder.MachineBuilder;
+import legacy.machine.interfaces.Machine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Brendan on 5/21/2016.
- *
- * Runs Machines that conform to the IMachine interface.
+ * Created by Brendan on 5/17/2016.
  */
 public class MachineRunner {
     private static final Logger logger = LoggerFactory.getLogger(MachineRunner.class);
 
-    private static IMachine machine;
+    private static Machine machine;
 
     public MachineRunner() {
         this(MachineBuilder.getDefaultMachine());
     }
 
-    public MachineRunner(IMachine machine) {
+    public MachineRunner(Machine machine) {
         MachineRunner.machine = machine;
     }
 
     public static void main(String[] args) {
-        MachineRunner runner = new MachineRunner();
+        logger.info("Starting up a new legacy.machine runner...");
 
-        logger.info("Starting up a new Machine...");
+        MachineRunner runner = new MachineRunner();
         runner.getMachine().turnOn();
         runner.getMachine().run();
         runner.getMachine().turnOff();
     }
 
-    public IMachine getMachine() {
+    public Machine getMachine() {
         return machine;
     }
 }

@@ -1,57 +1,46 @@
 package machine.builder;
 
+import machine.base.BaseMachine;
+import machine.implementations.ChipEight.ChipEightCPU;
+import machine.implementations.ChipEight.ChipEightKeyboard;
 import machine.implementations.ChipEight.ChipEightMachine;
-import machine.implementations.ChipEight.cpu.ChipEightCPU;
-import machine.implementations.ChipEight.keyboard.ChipEightKeyboard;
-import machine.implementations.ChipEight.memory.EightBitMemoryBank;
-import machine.implementations.ChipEight.screen.ChipEightScreen;
-import machine.interfaces.*;
+import machine.implementations.ChipEight.ChipEightScreen;
+import machine.interfaces.IMachinePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Brendan on 5/17/2016.
+ * Created by Brendan on 5/21/2016.
+ *
+ * Builds Machines based on the "attach" method present
+ * on the IMachine interface.
  */
 public class MachineBuilder {
     private static final Logger logger = LoggerFactory.getLogger(MachineBuilder.class);
+    private BaseMachine machineCache;
 
-    private Machine buildCache;
-
-    public static Machine getDefaultMachine() {
-        return new MachineBuilder().newDefaultMachine().addCPU(new ChipEightCPU())
-                .addMemory(MachinePart.Identifier.RAM, new EightBitMemoryBank(4086))
-                .addMemory(MachinePart.Identifier.DISK, new EightBitMemoryBank(4086))
-                .addPeripheral(new ChipEightKeyboard()).addPeripheral(new ChipEightScreen())
+    public static BaseMachine getDefaultMachine() {
+        return new MachineBuilder().defaultMachine()
+                .attachPart(new ChipEightCPU())
+                //.attachPart(new ChipEightMemoryBank(4096, "RAM"))
+                //.attachPart(new ChipEightMemoryBank(4096, "DISK"))
+                .attachPart(new ChipEightScreen())
+                .attachPart(new ChipEightKeyboard())
                 .build();
     }
 
-    public MachineBuilder newDefaultMachine() {
-        logger.info("Getting new default machine...");
-        this.buildCache = new ChipEightMachine();
+    private MachineBuilder defaultMachine() {
+        machineCache = new ChipEightMachine("Chip-8");
         return this;
     }
 
-    public MachineBuilder addCPU(CPU processor) {
-        logger.info("Attaching a CPU... {}", processor);
-        this.buildCache.attach(processor);
+    private MachineBuilder attachPart(IMachinePart part) {
+        machineCache.attach(part);
         return this;
     }
 
-    public MachineBuilder addMemory(MachinePart.Identifier type, Memory mem) {
-        logger.info("Attaching Memory... [{}, {}]", type, mem.getSize());
-        mem.setMemoryType(type);
-        this.buildCache.attach(mem);
-        return this;
-    }
-
-    public MachineBuilder addPeripheral(Peripheral peripheral) {
-        logger.info("Adding a Peripheral... {}", peripheral);
-        this.buildCache.attach(peripheral);
-        return this;
-    }
-
-    public Machine build() {
-        logger.info("Building final machine... {}", this.buildCache);
-        return this.buildCache;
+    private BaseMachine build() {
+        logger.debug("Machine that has been built:\n{}", machineCache);
+        return machineCache;
     }
 }
