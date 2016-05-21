@@ -6,7 +6,13 @@ package machine.interfaces;
 public interface ICpu extends IMachinePart {
     IInstruction fetch(IMemory mem);
 
-    CPUOpcode decode(IInstruction memoryLoc);
+    ICPUOpcode decode(IInstruction memoryLoc);
 
-    boolean execute(CPUOpcode ins);
+    boolean execute(ICPUOpcode ins);
+
+    void signal();
+
+    boolean hasSignal();
+
+    void resetSignal();
 }

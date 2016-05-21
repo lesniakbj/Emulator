@@ -2,6 +2,9 @@ package machine.base;
 
 import machine.interfaces.*;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * Created by Brendan on 5/21/2016.
  * <p>
@@ -10,10 +13,10 @@ import machine.interfaces.*;
  * implement any of the methods that are required in IMachine.
  */
 public abstract class BaseMachine implements IMachine {
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private String machineName;
     private boolean isRunning;
     private volatile long runningTime;
-
     private ICpu cpu;
     private IRam ram;
     private IDisk disk;
@@ -69,6 +72,10 @@ public abstract class BaseMachine implements IMachine {
 
     public void setScreen(IScreen screen) {
         this.screen = screen;
+    }
+
+    public ScheduledExecutorService getScheduler() {
+        return scheduler;
     }
 
     public IKeyboard getKeyboard() {

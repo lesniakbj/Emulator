@@ -1,10 +1,7 @@
 package machine.builder;
 
 import machine.base.BaseMachine;
-import machine.implementations.ChipEight.ChipEightCPU;
-import machine.implementations.ChipEight.ChipEightKeyboard;
-import machine.implementations.ChipEight.ChipEightMachine;
-import machine.implementations.ChipEight.ChipEightScreen;
+import machine.implementations.ChipEight.*;
 import machine.interfaces.IMachinePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +19,15 @@ public class MachineBuilder {
     public static BaseMachine getDefaultMachine() {
         return new MachineBuilder().defaultMachine()
                 .attachPart(new ChipEightCPU())
-                //.attachPart(new ChipEightMemoryBank(4096, "RAM"))
-                //.attachPart(new ChipEightMemoryBank(4096, "DISK"))
+                .attachPart(new ChipEightRAM())
+                .attachPart(new ChipEightDisk())
                 .attachPart(new ChipEightScreen())
                 .attachPart(new ChipEightKeyboard())
                 .build();
     }
 
     private MachineBuilder defaultMachine() {
-        machineCache = new ChipEightMachine("Chip-8");
+        machineCache = new ChipEightMachine();
         return this;
     }
 

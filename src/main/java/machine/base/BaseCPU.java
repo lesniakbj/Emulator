@@ -7,6 +7,7 @@ import machine.interfaces.ICpu;
  */
 public abstract class BaseCPU implements ICpu {
     private String cpuName;
+    private boolean signalFlag;
 
     public String getCpuName() {
         return cpuName;
@@ -14,6 +15,14 @@ public abstract class BaseCPU implements ICpu {
 
     public void setCpuName(String cpuName) {
         this.cpuName = cpuName;
+    }
+
+    public boolean getSignal() {
+        return signalFlag;
+    }
+
+    public void setSignal(boolean signalFlag) {
+        this.signalFlag = signalFlag;
     }
 
     public String toString() {
