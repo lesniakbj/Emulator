@@ -110,11 +110,21 @@ public abstract class BaseMachine implements IMachine {
                 "\t[Running Time: " + runningTime + "],\n" +
                 "\t[Default Program: " + program + "],\n" +
                 "\t[Program Loaded: " + isProgramLoaded + "]\n" +
-                "\t[CPU: " + cpu + "]\n" +
-                "\t[RAM: " + ram + "]\n" +
-                "\t[DISK: " + disk + "]\n" +
-                "\t[SCREEN: " + screen + "]\n" +
-                "\t[KEYBOARD: " + keyboard + "]\n" +
+                "\t[CPU: \n" +
+                "\t\t" + cpu + "\n" +
+                "\t]\n" +
+                "\t[RAM: \n" +
+                "\t\t" + ram + "\n" +
+                "\t]\n" +
+                "\t[DISK: \n" +
+                "\t\t" + disk + "\n" +
+                "\t]\n" +
+                "\t[SCREEN: \n" +
+                "\t\t" + screen + "\n" +
+                "\t]\n" +
+                "\t[KEYBOARD: \n" +
+                "\t\t" + keyboard + "\n" +
+                "\t]\n" +
                 "]";
     }
 }
