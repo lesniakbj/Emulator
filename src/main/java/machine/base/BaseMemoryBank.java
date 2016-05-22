@@ -3,6 +3,7 @@ package machine.base;
 import machine.interfaces.IMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.BinaryUtils;
 
 /**
  * Created by Brendan on 5/21/2016.
@@ -23,7 +24,7 @@ public abstract class BaseMemoryBank implements IMemory {
 
     @Override
     public byte getMemory(int offset) {
-        logger.info("Retrieving memory from {} at {}: {}", this, offset, getMemory()[offset]);
+        logger.info("Retrieving memory from {} at {}: {}", this, offset, BinaryUtils.toHexShort(getMemory()[offset]));
         return getMemory()[offset];
     }
 
@@ -31,7 +32,7 @@ public abstract class BaseMemoryBank implements IMemory {
     public short getMemoryWord(int offset) {
         byte high = getMemory()[offset];
         byte low = getMemory()[offset + 1];
-        logger.info("Memory word found to be in {}: {}{} {}", this, high, low, (short) (((high & 0xFF) << 8) | (low & 0xFF)));
+        logger.info("Memory word found to be in {}: {}, {} = {}", this, BinaryUtils.toHexByte(high), BinaryUtils.toHexByte(low), BinaryUtils.toHexShort((short) (((high & 0xFF) << 8) | (low & 0xFF))));
         return (short) (((high & 0xFF) << 8) | (low & 0xFF));
     }
 

@@ -34,6 +34,11 @@ public class ChipEightMachine extends BaseMachine {
         setProgram(program);
         setProgramLoaded(false);
 
+        if (program == null) {
+            logger.debug("No program, loading test program!");
+            setProgram(new ChipEightProgram("test.program"));
+        }
+
         taskTimerTime = 0;
 
         logger.debug("New Machine Created to:\n{}", this);
@@ -46,7 +51,8 @@ public class ChipEightMachine extends BaseMachine {
         setIsRunning(true);
         setRunningTime(0);
         startSystemTimer();
-        return false;
+
+        return loadProgram(getDefaultProgram());
     }
 
     private void startSystemTimer() {
@@ -132,12 +138,6 @@ public class ChipEightMachine extends BaseMachine {
 
     @Override
     public boolean loadProgram(IProgram program) {
-        if (program == null) {
-            logger.info("Program was null! Loading default program...");
-            setProgramLoaded(getDefaultProgram().loadIntoMemory(0, getRAM()));
-            return isProgramLoaded();
-        }
-        logger.info("Loading program {}", program);
         setProgramLoaded(program.loadIntoMemory(0, getRAM()));
         return isProgramLoaded();
     }

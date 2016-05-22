@@ -17,24 +17,38 @@ public class ChipEightCPU extends BaseCPU {
 
     public ChipEightCPU() {
         setCpuName("Chip-8 CPU");
+        setInstructionPointer(0);
+        setStackPointer(2048);
     }
 
     @Override
-    public IInstruction fetch(IMemory mem) {
-        logger.debug("Fetching instruction from {}", mem);
-        return null;
+    public IInstruction fetch(IMemory ins) {
+        logger.debug("Fetching instruction from {}", ins);
+        if (getInstructionPointer() >= ins.getSize()) {
+            logger.debug("Instruction pointer out of bounds!");
+            return null;
+        }
+        short insShort = ins.getMemoryWord(getInstructionPointer());
+        setInstructionPointer(getInstructionPointer() + 2);
+        return new ChipEightRawInstruction(insShort);
     }
 
     @Override
-    public ICPUOpcode decode(IInstruction memory) {
-        logger.debug("Decoding memory fetched: {}", memory);
-        return null;
+    public ICPUOpcode decode(IInstruction ins) {
+        logger.debug("Decoding memory fetched: {}", ins);
+        if (ins == null) {
+            return null;
+        }
+        short insShort = ins.getInstruction();
+        return new ChipEightOpcode(insShort);
     }
 
     @Override
     public boolean execute(ICPUOpcode ins) {
         logger.debug("Executing instruction: {}", ins);
-        return false;
+
+        return ins != null;
+
     }
 
     @Override

@@ -9,6 +9,9 @@ public abstract class BaseCPU implements ICpu {
     private String cpuName;
     private boolean signalFlag;
 
+    private int instructionPointer;
+    private int stackPointer;
+
     public String getCpuName() {
         return cpuName;
     }
@@ -27,5 +30,21 @@ public abstract class BaseCPU implements ICpu {
 
     public String toString() {
         return "[CPU - [CPU Name: " + cpuName + "]]";
+    }
+
+    public int getStackPointer() {
+        return stackPointer;
+    }
+
+    public void setStackPointer(int stackPointer) {
+        this.stackPointer = stackPointer;
+    }
+
+    public int getInstructionPointer() {
+        return instructionPointer;
+    }
+
+    public void setInstructionPointer(int instructionPointer) {
+        this.instructionPointer = instructionPointer;
     }
 }
