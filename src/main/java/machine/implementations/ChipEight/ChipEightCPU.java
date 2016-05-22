@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ChipEightCPU extends BaseCPU {
     private static final Logger logger = LoggerFactory.getLogger(ChipEightCPU.class);
+    private static int emptyInstructions = 0;
 
     public ChipEightCPU() {
         setCpuName("Chip-8 CPU");
@@ -22,13 +23,26 @@ public class ChipEightCPU extends BaseCPU {
     }
 
     @Override
-    public IInstruction fetch(IMemory ins) {
-        logger.debug("Fetching instruction from {}", ins);
-        if (getInstructionPointer() >= ins.getSize()) {
+    public IInstruction fetch(IMemory mem) {
+        logger.debug("Fetching instruction from {}", mem);
+        if (getInstructionPointer() >= mem.getSize()) {
             logger.debug("Instruction pointer out of bounds!");
             return null;
         }
-        short insShort = ins.getMemoryWord(getInstructionPointer());
+
+        short insShort = mem.getMemoryWord(getInstructionPointer());
+
+        if (insShort == 0) {
+            emptyInstructions++;
+        } else {
+            emptyInstructions = (emptyInstructions == 0) ? 0 : emptyInstructions - 1;
+        }
+
+        logger.info("There are {} empty instructions.", emptyInstructions);
+        if (emptyInstructions >= 5) {
+            return null;
+        }
+
         setInstructionPointer(getInstructionPointer() + 2);
         return new ChipEightRawInstruction(insShort);
     }
@@ -48,7 +62,6 @@ public class ChipEightCPU extends BaseCPU {
         logger.debug("Executing instruction: {}", ins);
 
         return ins != null;
-
     }
 
     @Override
