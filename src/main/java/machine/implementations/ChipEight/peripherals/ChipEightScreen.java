@@ -1,6 +1,7 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.peripherals;
 
 import machine.base.BaseScreen;
+import machine.interfaces.IMachine;
 
 /**
  * Created by Brendan on 5/21/2016.
@@ -10,5 +11,11 @@ import machine.base.BaseScreen;
 public class ChipEightScreen extends BaseScreen {
     public ChipEightScreen() {
         setScreenName("Chip-8 Screen");
+    }
+
+    @Override
+    public boolean attach(IMachine machine) {
+        setAttachedMachine(machine);
+        return true;
     }
 }

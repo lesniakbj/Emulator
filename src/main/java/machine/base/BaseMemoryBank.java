@@ -1,5 +1,6 @@
 package machine.base;
 
+import machine.interfaces.IMachine;
 import machine.interfaces.IMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import utils.BinaryUtils;
 public abstract class BaseMemoryBank implements IMemory {
     private static final Logger logger = LoggerFactory.getLogger(BaseMemoryBank.class);
 
+    private IMachine attachedMachine;
     private String type;
     private byte[] memory;
 
@@ -66,5 +68,13 @@ public abstract class BaseMemoryBank implements IMemory {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public IMachine getAttachedMachine() {
+        return attachedMachine;
+    }
+
+    public void setAttachedMachine(IMachine attachedMachine) {
+        this.attachedMachine = attachedMachine;
     }
 }

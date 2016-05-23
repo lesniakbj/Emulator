@@ -1,6 +1,7 @@
 package machine.implementations.ChipEight;
 
 import machine.base.BaseMachine;
+import machine.implementations.ChipEight.program.ChipEightProgram;
 import machine.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,7 @@ public class ChipEightMachine extends BaseMachine {
     public void run() {
         logger.info("Machine has turned on... Beginning main loop...");
         while (isRunning()) {
-            boolean noError = runCycle(getCPU(), getRAM());
+            boolean noError = runCycle(getCPU());
             logger.debug("There is no error? {}", noError);
 
             if (getCPU().hasSignal()) {
@@ -97,9 +98,9 @@ public class ChipEightMachine extends BaseMachine {
         }
     }
 
-    private boolean runCycle(ICpu cpu, IMemory ram) {
+    private boolean runCycle(ICpu cpu) {
         logger.info("Running a single CPU Cycle!");
-        IInstruction ins = cpu.fetch(ram);
+        IInstruction ins = cpu.fetch();
         ICPUOpcode op = cpu.decode(ins);
         return cpu.execute(op);
     }
@@ -110,27 +111,27 @@ public class ChipEightMachine extends BaseMachine {
 
         if (machinePart instanceof ICpu) {
             setCPU((ICpu) machinePart);
-            return true;
+            return machinePart.attach(this);
         }
 
         if (machinePart instanceof IRam) {
             setRam((IRam) machinePart);
-            return true;
+            return machinePart.attach(this);
         }
 
         if (machinePart instanceof IDisk) {
             setDisk((IDisk) machinePart);
-            return true;
+            return machinePart.attach(this);
         }
 
         if (machinePart instanceof IScreen) {
             setScreen((IScreen) machinePart);
-            return true;
+            return machinePart.attach(this);
         }
 
         if (machinePart instanceof IKeyboard) {
             setKeyboard((IKeyboard) machinePart);
-            return true;
+            return machinePart.attach(this);
         }
 
         return false;

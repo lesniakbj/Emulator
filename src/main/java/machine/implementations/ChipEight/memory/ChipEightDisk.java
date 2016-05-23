@@ -1,7 +1,8 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.memory;
 
 import machine.base.BaseMemoryBank;
 import machine.interfaces.IDisk;
+import machine.interfaces.IMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,5 +34,11 @@ public class ChipEightDisk extends BaseMemoryBank implements IDisk {
     @Override
     public int getSize() {
         return 0;
+    }
+
+    @Override
+    public boolean attach(IMachine machine) {
+        setAttachedMachine(machine);
+        return true;
     }
 }

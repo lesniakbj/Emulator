@@ -1,11 +1,13 @@
 package machine.base;
 
+import machine.interfaces.IMachine;
 import machine.interfaces.IScreen;
 
 /**
  * Created by Brendan on 5/21/2016.
  */
-public class BaseScreen implements IScreen {
+public abstract class BaseScreen implements IScreen {
+    private IMachine attachedMachine;
     private String screenName;
 
     public String getScreenName() {
@@ -18,5 +20,13 @@ public class BaseScreen implements IScreen {
 
     public String toString() {
         return "[SCREEN - [Screen Name: " + screenName + "]]";
+    }
+
+    public IMachine getAttachedMachine() {
+        return attachedMachine;
+    }
+
+    public void setAttachedMachine(IMachine attachedMachine) {
+        this.attachedMachine = attachedMachine;
     }
 }

@@ -1,7 +1,12 @@
 package machine.builder;
 
 import machine.base.BaseMachine;
-import machine.implementations.ChipEight.*;
+import machine.implementations.ChipEight.ChipEightMachine;
+import machine.implementations.ChipEight.cpu.ChipEightCPU;
+import machine.implementations.ChipEight.memory.ChipEightDisk;
+import machine.implementations.ChipEight.memory.ChipEightRAM;
+import machine.implementations.ChipEight.peripherals.ChipEightKeyboard;
+import machine.implementations.ChipEight.peripherals.ChipEightScreen;
 import machine.interfaces.IMachinePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

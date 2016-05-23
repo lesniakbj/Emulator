@@ -13,4 +13,22 @@ public interface IMachine {
     boolean attach(IMachinePart machine);
 
     boolean loadProgram(IProgram program);
+
+    boolean isRunning();
+
+    long getRunningTime();
+
+    ICpu getCPU();
+
+    IMemory getRAM();
+
+    IMemory getDisk();
+
+    IScreen getScreen();
+
+    IKeyboard getKeyboard();
+
+    IProgram getDefaultProgram();
+
+    boolean isProgramLoaded();
 }

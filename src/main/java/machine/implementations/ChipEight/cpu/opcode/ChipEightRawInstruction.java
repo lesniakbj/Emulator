@@ -1,4 +1,4 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.cpu.opcode;
 
 import machine.interfaces.IInstruction;
 import utils.BinaryUtils;

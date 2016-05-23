@@ -1,11 +1,13 @@
 package machine.base;
 
 import machine.interfaces.ICpu;
+import machine.interfaces.IMachine;
 
 /**
  * Created by Brendan on 5/21/2016.
  */
 public abstract class BaseCPU implements ICpu {
+    private IMachine attachedMachine;
     private String cpuName;
     private boolean signalFlag;
 
@@ -46,5 +48,13 @@ public abstract class BaseCPU implements ICpu {
 
     public void setInstructionPointer(int instructionPointer) {
         this.instructionPointer = instructionPointer;
+    }
+
+    public IMachine getAttachedMachine() {
+        return attachedMachine;
+    }
+
+    public void setAttachedMachine(IMachine attachedMachine) {
+        this.attachedMachine = attachedMachine;
     }
 }

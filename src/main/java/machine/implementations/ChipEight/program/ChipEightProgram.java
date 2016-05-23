@@ -1,4 +1,4 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.program;
 
 import machine.interfaces.IMemory;
 import machine.interfaces.IProgram;

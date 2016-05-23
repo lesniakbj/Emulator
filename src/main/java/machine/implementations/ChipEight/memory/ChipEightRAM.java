@@ -1,6 +1,7 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.memory;
 
 import machine.base.BaseMemoryBank;
+import machine.interfaces.IMachine;
 import machine.interfaces.IRam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +34,11 @@ public class ChipEightRAM extends BaseMemoryBank implements IRam {
     @Override
     public int getSize() {
         return getMemory().length;
+    }
+
+    @Override
+    public boolean attach(IMachine machine) {
+        setAttachedMachine(machine);
+        return true;
     }
 }

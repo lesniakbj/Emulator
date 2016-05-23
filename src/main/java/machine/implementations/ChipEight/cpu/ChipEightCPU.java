@@ -1,8 +1,12 @@
-package machine.implementations.ChipEight;
+package machine.implementations.ChipEight.cpu;
 
 import machine.base.BaseCPU;
+import machine.implementations.ChipEight.cpu.opcode.CPUOperations;
+import machine.implementations.ChipEight.cpu.opcode.ChipEightOpcode;
+import machine.implementations.ChipEight.cpu.opcode.ChipEightRawInstruction;
 import machine.interfaces.ICPUOpcode;
 import machine.interfaces.IInstruction;
+import machine.interfaces.IMachine;
 import machine.interfaces.IMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +27,9 @@ public class ChipEightCPU extends BaseCPU {
     }
 
     @Override
-    public IInstruction fetch(IMemory mem) {
+    public IInstruction fetch() {
+        IMemory mem = getAttachedMachine().getRAM();
+
         logger.debug("Fetching instruction from {}", mem);
         if (getInstructionPointer() >= mem.getSize()) {
             logger.debug("Instruction pointer out of bounds!");
@@ -54,14 +60,22 @@ public class ChipEightCPU extends BaseCPU {
             return null;
         }
         short insShort = ins.getInstruction();
-        return new ChipEightOpcode(insShort);
+
+        ICPUOpcode opCode = new ChipEightOpcode(getAttachedMachine(), insShort);
+        opCode.decode();
+        return opCode;
     }
 
-    @Override
-    public boolean execute(ICPUOpcode ins) {
-        logger.debug("Executing instruction: {}", ins);
 
-        return ins != null;
+    @Override
+    public boolean execute(ICPUOpcode op) {
+        logger.debug("Executing instruction!");
+        if (op == null || op.getCommandType() == CPUOperations.CommandType.UNKNOWN) {
+            return false;
+        }
+
+        op.execute();
+        return true;
     }
 
     @Override
@@ -77,5 +91,11 @@ public class ChipEightCPU extends BaseCPU {
     @Override
     public void resetSignal() {
         setSignal(false);
+    }
+
+    @Override
+    public boolean attach(IMachine machine) {
+        setAttachedMachine(machine);
+        return true;
     }
 }
