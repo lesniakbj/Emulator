@@ -106,7 +106,9 @@ public final class ChipEightOpcodes {
 
         public static final short KEYS_FAMILY = 0xE;
         public static final short SKIP_KEY_PRESS_FAMILY = 0xE;
+        public static final short SKIP_KEY_PRESS_VALUE = 0x9E;
         public static final short SKIP_NOT_KEY_PRESS_FAMILY = 0xE;
+        public static final short SKIP_NOT_KEY_PRESS_VALUE = 0xA1;
 
         public static final short DELAY_FAMILY = 0xF;
         public static final short GET_DELAY_TIMER_FAMILY = 0xF;

@@ -152,10 +152,29 @@ public class ChipEightCPUExecutor {
     }
 
     private static boolean handleDelayOpcode(ChipEightOpcode op, short rawOpcode) {
+
+        short delayOp = (short) (rawOpcode & 0x00FF);
+        switch (delayOp) {
+
+        }
         return false;
     }
 
     private static boolean handleKeyPressOpcode(ChipEightOpcode op, short rawOpcode) {
+        IMachine machine = op.attachedMachine();
+        ChipEightCPU cpu = (ChipEightCPU) machine.getCPU();
+
+        short keyOp = (short) (rawOpcode & 0x00FF);
+        switch (keyOp) {
+            case ChipEightOpcodes.MultiMappedOperations.SKIP_KEY_PRESS_VALUE:
+                // Skip next instruction if key with the value of Vx is pressed.
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
+                return true;
+            case ChipEightOpcodes.MultiMappedOperations.SKIP_NOT_KEY_PRESS_VALUE:
+                // Skip next instruction if key with the value of Vx is not pressed.
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
+                return true;
+        }
         return false;
     }
 
@@ -164,31 +183,59 @@ public class ChipEightCPUExecutor {
         ChipEightCPU cpu = (ChipEightCPU) machine.getCPU();
         ChipEightRAM ram = (ChipEightRAM) machine.getRAM();
 
+        int x;
+        int y;
+        int val;
         byte aluOp = (byte) (rawOpcode & 0x000F);
         logger.debug("Decoding ALU Opcode: The decoded byte is: [{}]", BinaryUtils.toHexByte(aluOp));
         switch (aluOp) {
             case ChipEightOpcodes.MultiMappedOperations.LOAD_IN_REGISTER_VALUE:
-                int x = ((rawOpcode & 0x0F00) >> 8);
-                int y = ((rawOpcode & 0x00F0) >> 4);
+                // Stores the value of register Vy in register Vx.
+                x = ((rawOpcode & 0x0F00) >> 8);
+                y = ((rawOpcode & 0x00F0) >> 4);
                 logger.debug("Loading register [{}] with value from register [{}]", x, y);
                 cpu.setRegisterValue(x, cpu.getRegisterValue(y));
                 cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.OR_REGISTER_VALUES_VALUE:
+                // Set Vx = Vx OR Vy.
+                x = ((rawOpcode & 0x0F00) >> 8);
+                y = ((rawOpcode & 0x00F0) >> 4);
+                logger.debug("Loading register [{}] with value from register [{} OR {}]", x, x, y);
+                val = cpu.getRegisterValue(x) | cpu.getRegisterValue(y);
+                cpu.setRegisterValue(x, val & 0xFFFF);
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.AND_REGISTER_VALUES_VALUE:
+                x = ((rawOpcode & 0x0F00) >> 8);
+                y = ((rawOpcode & 0x00F0) >> 4);
+                logger.debug("Loading register [{}] with value from register [{} AND {}]", x, x, y);
+                val = cpu.getRegisterValue(x) & cpu.getRegisterValue(y);
+                cpu.setRegisterValue(x, val & 0xFFFF);
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.XOR_REGISTER_VALUES_VALUE:
+                x = ((rawOpcode & 0x0F00) >> 8);
+                y = ((rawOpcode & 0x00F0) >> 4);
+                logger.debug("Loading register [{}] with value from register [{} XOR {}]", x, x, y);
+                val = cpu.getRegisterValue(x) ^ cpu.getRegisterValue(y);
+                cpu.setRegisterValue(x, val & 0xFFFF);
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.ADD_WITH_CARRY_VALUE:
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.SUB_WITH_BORROW_VALUE:
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.SHIFT_RIGHT_VALUE:
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.SUB_NO_BORROW_VALUE:
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
             case ChipEightOpcodes.MultiMappedOperations.SHIFT_LEFT_VALUE:
+                cpu.setInstructionPointer(cpu.getInstructionPointer() + 2);
                 return true;
         }
         return false;

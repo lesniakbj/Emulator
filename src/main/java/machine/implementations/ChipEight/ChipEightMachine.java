@@ -66,7 +66,7 @@ public class ChipEightMachine extends BaseMachine {
                 getCPU().signal();
                 taskTimerTime = time;
             }
-        }, 0, 1, TimeUnit.NANOSECONDS);
+        }, 0, 1, TimeUnit.MILLISECONDS);
     }
 
     @Override
