@@ -1,6 +1,6 @@
 package machine.interfaces;
 
-import machine.implementations.ChipEight.cpu.opcode.CPUOperations;
+import machine.implementations.ChipEight.cpu.opcode.ChipEightOpcodes;
 
 /**
  * Created by Brendan on 5/21/2016.
@@ -10,5 +10,7 @@ public interface ICPUOpcode {
 
     boolean execute();
 
-    CPUOperations.CommandType getCommandType();
+    ChipEightOpcodes.CommandType getCommandType();
+
+    IMachine attachedMachine();
 }

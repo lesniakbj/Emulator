@@ -1,6 +1,7 @@
 package machine.implementations.ChipEight.memory;
 
 import machine.base.BaseMemoryBank;
+import machine.implementations.ChipEight.ChipEightConstants;
 import machine.interfaces.IMachine;
 import machine.interfaces.IRam;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ public class ChipEightRAM extends BaseMemoryBank implements IRam {
     private static final Logger logger = LoggerFactory.getLogger(ChipEightRAM.class);
 
     public ChipEightRAM() {
-        this(4096);
+        this(ChipEightConstants.MEMORY_SIZE);
     }
 
     public ChipEightRAM(int size) {

@@ -1,6 +1,7 @@
 package machine.implementations.ChipEight.memory;
 
 import machine.base.BaseMemoryBank;
+import machine.implementations.ChipEight.ChipEightConstants;
 import machine.interfaces.IDisk;
 import machine.interfaces.IMachine;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ public class ChipEightDisk extends BaseMemoryBank implements IDisk {
     private static final Logger logger = LoggerFactory.getLogger(ChipEightDisk.class);
 
     public ChipEightDisk() {
-        this(4096);
+        this(ChipEightConstants.MEMORY_SIZE);
     }
 
     public ChipEightDisk(int size) {

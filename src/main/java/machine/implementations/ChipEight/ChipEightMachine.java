@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ChipEightMachine extends BaseMachine {
     private static final Logger logger = LoggerFactory.getLogger(ChipEightMachine.class);
-
+    private static int cycle_count = 0;
     private long taskTimerTime;
 
     public ChipEightMachine() {
@@ -81,8 +81,6 @@ public class ChipEightMachine extends BaseMachine {
         logger.info("Machine has turned on... Beginning main loop...");
         while (isRunning()) {
             boolean noError = runCycle(getCPU());
-            logger.debug("There is no error? {}", noError);
-
             if (getCPU().hasSignal()) {
                 // Do something now that the timer has fired...
                 logger.debug("Timer has signaled!");
@@ -99,10 +97,17 @@ public class ChipEightMachine extends BaseMachine {
     }
 
     private boolean runCycle(ICpu cpu) {
-        logger.info("Running a single CPU Cycle!");
-        IInstruction ins = cpu.fetch();
-        ICPUOpcode op = cpu.decode(ins);
-        return cpu.execute(op);
+        cycle_count++;
+        if (cycle_count >= ChipEightConstants.CYCLE_DELAY) {
+            cycle_count = 0;
+
+            logger.info("Running a single CPU Cycle!");
+            IInstruction ins = cpu.fetch();
+            ICPUOpcode op = cpu.decode(ins);
+            return cpu.execute(op);
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -139,7 +144,7 @@ public class ChipEightMachine extends BaseMachine {
 
     @Override
     public boolean loadProgram(IProgram program) {
-        setProgramLoaded(program.loadIntoMemory(0, getRAM()));
+        setProgramLoaded(program.loadIntoMemory(ChipEightConstants.PROGRAM_START, getRAM()));
         return isProgramLoaded();
     }
 }
